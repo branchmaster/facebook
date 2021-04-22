@@ -10,7 +10,7 @@ from bs4 import BeautifulSoup
 import album_sender
 import time
 import facebook_to_album
-
+import facebook_scraper
 
 with open('credential') as f:
 	credential = yaml.load(f, Loader=yaml.FullLoader)
@@ -22,15 +22,30 @@ existing = plain_db.loadKeyOnlyDB('existing')
 tele = Updater(credential['bot_token'], use_context=True)
 debug_group = tele.bot.get_chat(credential['debug_group'])
 
+def getKey(url):
+	return url.strip('/').split('/')[-1]
+
 @log_on_fail(debug_group)
 def run():
 	sent = False
-	for channel_id, detail in setting.items():
+	for channel_id, pages in setting.items():
 		channel = tele.bot.get_chat(channel_id)
-		for name, rss in detail.items():
-			for album in rss_to_album.get(rss):
-				if existing.contain(album.url):
+		for page, detail in pages.items():
+			posts = facebook_scraper.get_posts(page)
+			for post in posts:
+				url = post['post_url']
+				if existing.contain(url):
 					continue
+				if getKey(url) in [getKey(item) for item in existing._db.items.keys()]:
+					continue
+				for attribute in ['shared_post_url', 'video']:
+					if post[attribute]:
+						print(url, attribute, post[attribute])
+						print(post)
+				if post['likes'] < detail.get('like', 500):
+					print('skip', url, post['likes'], page)
+					continue
+				album = facebook_to_album.get(post)
 				if not sent:
 					sent = True
 				else:
