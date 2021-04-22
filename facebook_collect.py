@@ -29,7 +29,7 @@ def getKey(url):
 @log_on_fail(debug_group)
 def run():
 	sent = False
-	for channel_id, pages in schedule:
+	for channel_id, pages in setting.items():
 		channel = tele.bot.get_chat(channel_id)
 		schedule = list(pages.items())
 		random.shuffle(schedule)
