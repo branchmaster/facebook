@@ -35,7 +35,9 @@ def run():
 		random.shuffle(schedule)
 		for page, detail in schedule:
 			posts = facebook_scraper.get_posts(page)
+			count = 0
 			for post in posts:
+				count += 1
 				url = post['post_url']
 				if existing.contain(url):
 					continue
@@ -62,6 +64,7 @@ def run():
 						f.write('\n%s %s %s' % (url, str(e), str(post)))
 					continue
 				existing.add(album.url)
+			print(page, 'count', count)
 		
 if __name__ == '__main__':
 	run()
