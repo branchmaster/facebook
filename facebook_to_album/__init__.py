@@ -17,11 +17,17 @@ def getSharedText(text):
 	if not text:
 		return ''
 	index = text.find('\n\n')
-	return '\n\ncomment: ' + text[index:].strip()
-
+	if index == -1:
+		return ''
+	text = text[index:].strip()
+	if len(text) < 10:
+		return ''
+	return '\n\ncomment: ' + text
+	
 def get(content):
     result = Result()
     result.url = content['post_url']
+    result.video = content['video']
     result.cap_html_v2 = content['post_text'].strip() + getSharedText(content['shared_text'])
     result.imgs = list(dedup(content['images'] or []))
     return result

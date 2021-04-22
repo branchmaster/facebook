@@ -29,11 +29,11 @@ def getKey(url):
 @log_on_fail(debug_group)
 def run():
 	sent = False
-	schedule = list(setting.items())
-	random.shuffle(schedule)
 	for channel_id, pages in schedule:
 		channel = tele.bot.get_chat(channel_id)
-		for page, detail in pages.items():
+		schedule = list(pages.items())
+		random.shuffle(schedule)
+		for page, detail in schedule:
 			posts = facebook_scraper.get_posts(page)
 			for post in posts:
 				url = post['post_url']
@@ -54,7 +54,13 @@ def run():
 				else:
 					item_len = len(album.imgs) or 1
 					time.sleep(item_len * item_len + 5 * item_len)
-				album_sender.send_v2(channel, album)
+				try:
+					album_sender.send_v2(channel, album)
+				except Exception as e:
+					print(url, e)
+					with open('nohup.out', 'a') as f:
+						f.write('\n%s %s %s' % (url, str(e), str(post)))
+					continue
 				existing.add(album.url)
 		
 if __name__ == '__main__':

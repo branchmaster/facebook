@@ -6,8 +6,10 @@
   alliesacademy: {}
   genderinclusiveschools: {}
   WOMENSRIGHTSNEWS: {}
-  TheOther98: {}
-  unwomen: {}
+  TheOther98: 
+    likes: 1000
+  unwomen:
+    likes: 1000
   ARENWashington: {}
   deafqueer: {}
   UnpackingtheFword: {}
