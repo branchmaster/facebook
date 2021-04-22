@@ -11,6 +11,7 @@ import album_sender
 import time
 import facebook_to_album
 import facebook_scraper
+import random
 
 with open('credential') as f:
 	credential = yaml.load(f, Loader=yaml.FullLoader)
@@ -28,7 +29,9 @@ def getKey(url):
 @log_on_fail(debug_group)
 def run():
 	sent = False
-	for channel_id, pages in setting.items():
+	schedule = list(setting.items())
+	random.shuffle(schedule)
+	for channel_id, pages in schedule:
 		channel = tele.bot.get_chat(channel_id)
 		for page, detail in pages.items():
 			posts = facebook_scraper.get_posts(page)
