@@ -64,7 +64,8 @@ def run():
 						f.write('\n%s %s %s' % (url, str(e), str(post)))
 					continue
 				existing.add(album.url)
-			print(page, 'count', count)
+			if count == 0:
+				return
 		
 if __name__ == '__main__':
 	run()
